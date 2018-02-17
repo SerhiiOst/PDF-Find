@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using Model;
-using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
 
 namespace ViewModel
 {
@@ -10,7 +10,7 @@ namespace ViewModel
     {
         #region Static
 
-        private static string GetReportName(string filePath) => new PdfDocument(filePath).Info.Title;
+        private static string GetReportName(string filePath) => PdfReader.Open(filePath, PdfDocumentOpenMode.ReadOnly).Info.Title;
 
         private static void CheckPdfBy(string filePath)
         {
