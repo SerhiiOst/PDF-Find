@@ -69,9 +69,9 @@ namespace Model
 
         public ReportConfiguration FindReport(string reportName)
         {
-            // todo exception localizations
             if (string.IsNullOrWhiteSpace(reportName))
-                throw new ArgumentException("Argument is null or whitespace", nameof(reportName));
+            // todo exception localizations
+                return null;
 
             ReportConfiguration.ValidateReportName(reportName);
 
@@ -83,9 +83,8 @@ namespace Model
 
         public GroupConfiguration FindGroup(string reportName)
         {
-            // todo exception localizations
             if (string.IsNullOrWhiteSpace(reportName))
-                throw new ArgumentException("Argument is null or whitespace", nameof(reportName));
+                return null;
 
             // todo validation
 
