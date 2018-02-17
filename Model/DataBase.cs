@@ -14,6 +14,11 @@ namespace Model
 
         #endregion
 
+        public DataBase()
+             : base()
+        {
+
+        }
         public DataBase(string nameOrConnectionString)
             : base(nameOrConnectionString)
         {
@@ -23,26 +28,41 @@ namespace Model
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<PrinterConfiguration>().HasKey(configuration => configuration.Id);
-
             modelBuilder.Ignore<PrinterConfiguration>();
 
             var reportConfiguration = modelBuilder.Entity<ReportConfiguration>();
-            reportConfiguration.
-                                HasKey(report => report.Id).
-                                Property(report => report.ReportName).
-                                HasColumnName("Name").
-                                IsRequired();
-            reportConfiguration.HasRequired(report => report.Group).WithMany();
-            reportConfiguration.HasMany(report => report.Openings).WithRequired();
+            var groupConfiguration = modelBuilder.Entity<GroupConfiguration>();
 
-            modelBuilder.Entity<GroupConfiguration>().
-                         HasKey(group => group.Id).
-                         Property(group => group.GroupName).
-                         HasColumnName("Name").
-                         IsRequired();
+            reportConfiguration
+                .HasKey(report => report.Id)
+                .Property(report => report.ReportName)
+                .HasColumnName("Name")
+                .IsRequired();
 
-            modelBuilder.Entity<FileReadingData>().HasKey(data => data.Id);
+            groupConfiguration
+                .HasKey(group => group.Id)
+                .Property(group => group.GroupName)
+                .HasColumnName("Name")
+                .IsRequired();
+
+            modelBuilder.Entity<FileReadingData>()
+                .HasKey(data => data.Id);
+
+            modelBuilder.Entity<ReportPrintData>()
+                .HasKey(data => data.Id);
+
+            reportConfiguration
+                .HasMany(report => report.Openings)
+                .WithRequired(print => print.Report)
+                .WillCascadeOnDelete();
+
+            reportConfiguration
+                .HasRequired(report => report.Group)
+                .WithMany(group => group.Reports);
+
+            groupConfiguration
+                .HasMany(group => group.Reports)
+                .WithRequired(rep => rep.Group);
 
             base.OnModelCreating(modelBuilder);
         }
